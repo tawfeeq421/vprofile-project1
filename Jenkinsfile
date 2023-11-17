@@ -1,3 +1,7 @@
+def COLOR_MAP = [
+    'SUCCESS': 'good', 
+    'FAILURE': 'danger',
+]
 pipeline {
     agent any
     tools {
@@ -16,7 +20,7 @@ pipeline {
 		NEXUS_GRP_REPO = 'vpro-maven-group'
         NEXUS_LOGIN = 'nexuslogin'
         SONARSERVER = 'sonarserver'
-        SONARSCANNER = 'sonarscanner'
+        SONARSCANNER = 'sonarQubeScanner'
     }
 
     stages {
@@ -36,6 +40,7 @@ pipeline {
             steps {
                 sh 'mvn -s settings.xml test'
             }
+
         }
 
         stage('Checkstyle Analysis'){
@@ -90,6 +95,15 @@ pipeline {
                   ]
                 )
             }
+        }
+
+    }
+    post {
+        always {
+            echo 'Slack Notifications.'
+            slackSend channel: '#cicdproject',
+                color: COLOR_MAP[currentBuild.currentResult],
+                message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
         }
     }
 }
