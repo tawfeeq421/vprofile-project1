@@ -16,7 +16,6 @@ pipeline {
 		NEXUS_GRP_REPO = 'fsa-rep-gr'
         NEXUS_LOGIN = 'nexuslogin'
     }
-	
 
     stages {
         stage('Build'){
@@ -26,3 +25,4 @@ pipeline {
         }
     }
 }
+
